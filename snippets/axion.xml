@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<manifest>
+
+  <remote name="axion"
+          fetch="https://github.com/AxionAOSP/"
+          sync-c="true"
+          sync-j="4"
+          revision="refs/heads/lineage-22.2"
+          review="review.lineageos.org" />
+
+  <remote name="axion-gitlab"
+          fetch="https://gitlab.com/AxionAOSP/"
+          sync-c="true"
+          sync-j="4"
+          revision="refs/heads/lineage-22.1" />
+
+  <remote  name="crdroid-gitlab"
+           fetch="https://gitlab.com/crdroidandroid/"
+           sync-c="true"
+           sync-j="4"
+           revision="refs/heads/15.0" />
+
+  <remove-project path="android" />
+  <remove-project path="art" />
+  <remove-project path="bionic" />
+  <remove-project path="bootable/recovery" />
+  <remove-project path="build/make" />
+  <remove-project path="build/release" />
+  <remove-project path="build/soong" />
+  <remove-project path="device/lineage/sepolicy" />
+  <remove-project path="frameworks/av" />
+  <remove-project path="frameworks/base" />
+  <remove-project path="frameworks/libs/systemui" />
+  <remove-project path="frameworks/native" />
+  <remove-project path="frameworks/opt/telephony" />
+  <remove-project path="hardware/google/camera" />
+  <remove-project path="hardware/google/gchips" />
+  <remove-project path="hardware/google/graphics/common" />
+  <remove-project path="hardware/google/pixel" />
+  <remove-project path="hardware/google/pixel-sepolicy" />
+  <remove-project path="hardware/interfaces" />
+  <remove-project path="lineage-sdk" />
+  <remove-project path="packages/apps/Backgrounds" />
+  <remove-project path="packages/apps/LineageParts" />
+  <remove-project path="packages/apps/Trebuchet" />
+  <remove-project path="packages/apps/ThemePicker" />
+  <remove-project path="packages/apps/Settings" />
+  <remove-project path="packages/apps/SetupWizard" />
+  <remove-project path="packages/apps/Updater" />
+  <remove-project path="packages/modules/Bluetooth" />
+  <remove-project path="packages/modules/StatsD" />
+  <remove-project path="packages/modules/Wifi" />
+  <remove-project path="packages/services/Telecomm" />
+  <remove-project path="packages/services/Telephony" />
+  <remove-project path="packages/overlays/Lineage" />
+  <remove-project path="system/core" />
+  <remove-project path="system/memory/lmkd" />
+  <remove-project path="vendor/lineage" />
+
+  <!-- Android Manifest  -->
+  <project path="android" name="android" remote="axion" />
+  
+  <project path="art" name="android_art" remote="axion" />
+  
+  <project path="bionic" name="android_bionic" groups="pdk" remote="axion"/>
+  <project path="bootable/recovery" name="android_bootable_recovery" groups="pdk" remote="axion" />
+
+  <!-- Build  -->
+  <project path="build/make" name="android_build" groups="pdk,sysui-studio" remote="axion" >
+    <linkfile dest="build/CleanSpec.mk" src="CleanSpec.mk" />
+    <linkfile dest="build/buildspec.mk.default" src="buildspec.mk.default" />
+    <linkfile dest="build/core" src="core" />
+    <linkfile dest="build/envsetup.sh" src="envsetup.sh" />
+    <linkfile dest="build/target" src="target" />
+    <linkfile dest="build/tools" src="tools" />
+  </project>
+  <project path="build/release" name="android_build_release" groups="pdk,tradefed,sysui-studio" remote="axion" />
+  <project path="build/soong" name="android_build_soong" groups="pdk,tradefed,sysui-studio" remote="axion" >
+    <linkfile dest="Android.bp" src="root.bp" />
+    <linkfile dest="bootstrap.bash" src="bootstrap.bash" />
+  </project>
+  
+  <!-- Device  -->
+  <project path="device/lineage/sepolicy" name="android_device_lineage_sepolicy" remote="axion" />
+
+  <!-- Lineage SDK  -->
+  <project path="lineage-sdk" name="android_lineage-sdk" remote="axion" />
+
+  <!-- Frameworks  -->
+  <project path="frameworks/av" name="android_frameworks_av" groups="pdk-cw-fs,pdk-fs,sysui-studio" remote="axion" />
+  <project path="frameworks/base" name="android_frameworks_base" groups="pdk-cw-fs,pdk-fs,sysui-studio" remote="axion" />
+  <project path="frameworks/libs/systemui" name="android_frameworks_libs_systemui" groups="pdk-cw-fs,pdk-fs,sysui-studio" remote="axion" />
+  <project path="frameworks/native" name="android_frameworks_native" groups="pdk-cw-fs,pdk-fs,sysui-studio" remote="axion" />
+  <project path="frameworks/opt/telephony" name="android_frameworks_opt_telephony" groups="pdk" remote="axion" />
+  
+  <!-- Hardware  -->
+  <project path="hardware/google/camera" name="android_hardware_google_camera" groups="pdk" remote="axion" />
+  <project path="hardware/google/gchips" name="android_hardware_google_gchips" groups="pdk-lassen,pdk-gs-arm,pdk-gs-imgtec" remote="axion" />
+  <project path="hardware/google/graphics/common" name="android_hardware_google_graphics_common" groups="pdk-lassen,pdk-gs-arm" remote="axion" />
+  <project path="hardware/google/pixel" name="android_hardware_google_pixel" groups="generic_fs,pixel,pdk-gs-arm" remote="axion" />
+  <project path="hardware/google/pixel-sepolicy" name="android_hardware_google_pixel-sepolicy" groups="generic_fs,pixel" remote="axion" />
+  <project path="hardware/interfaces" name="android_hardware_interfaces" groups="pdk,sysui-studio" remote="axion" />
+
+  <!-- Axion Packages  -->
+  <project path="packages/apps/Backgrounds" name="android_packages_apps_Backgrounds" groups="pdk-fs" remote="axion" />
+  <project path="packages/apps/ColumbusService" name="android_packages_apps_ColumbusService" groups="pdk-fs" remote="axion" />
+  <project path="packages/apps/FaceUnlock" name="android_packages_apps_FaceUnlock" remote="crdroid-gitlab" />
+  <project path="packages/apps/GameSpace" name="android_packages_apps_GameSpace" groups="pdk-fs" remote="axion" />
+  <project path="packages/apps/LineageParts" name="android_packages_apps_LineageParts" remote="axion" />
+  <project path="packages/apps/LMOFreeform" name="android_packages_apps_LMOFreeform" groups="pdk-fs" remote="axion" />
+  <project path="packages/apps/Matlog" name="android_packages_apps_Matlog" groups="pdk-fs" remote="axion" />
+  <project path="packages/apps/Personalizations" name="android_packages_apps_Personalizations" groups="pdk-fs,sysui-studio" remote="axion" />
+  <project path="packages/apps/SetupWizard" name="android_packages_apps_SetupWizard" remote="axion" />
+  <project path="packages/apps/VendorSupport" name="android_packages_apps_VendorSupport" groups="pdk-fs" remote="axion" />
+  <project path="packages/apps/Updater" name="android_packages_apps_Updater" remote="axion" />
+  <project path="packages/apps/ViPER4AndroidFX" name="android_packages_apps_ViPER4AndroidFX" remote="axion" revision="v4a" />
+  <project path="packages/services/Omnijaws" name="android_packages_services_Omnijaws" groups="pdk-cw-fs,pdk-fs" remote="axion" />
+
+  <!-- AOSP Packages  -->
+  <project path="packages/apps/Settings" name="android_packages_apps_Settings" groups="pdk-fs" remote="axion" />
+  <project path="packages/apps/Trebuchet" name="android_packages_apps_Launcher3" groups="pdk-fs,sysui-studio" remote="axion" />
+  <project path="packages/apps/ThemePicker" name="android_packages_apps_ThemePicker" groups="pdk-fs,sysui-studio" remote="axion" />
+  
+  <!-- AOSP Modules  -->
+  <project path="packages/modules/Bluetooth" name="android_packages_modules_Bluetooth" groups="pdk" remote="axion" />
+  <project path="packages/modules/StatsD" name="android_packages_modules_StatsD" groups="pdk-cw-fs,pdk-fs" remote="axion" />
+  <project path="packages/modules/Wifi" name="android_packages_modules_Wifi" groups="pdk-cw-fs,pdk-fs,sysui-studio" remote="axion" />
+
+  <!-- AOSP Services  -->
+  <project path="packages/services/Telecomm" name="android_packages_services_Telecomm" groups="pdk-cw-fs,pdk-fs" remote="axion" />
+  <project path="packages/services/Telephony" name="android_packages_services_Telephony" groups="pdk-cw-fs,pdk-fs" remote="axion" />
+
+  <!-- System  -->
+  <project path="system/core" name="android_system_core" groups="pdk" remote="axion" />
+  <project path="system/memory/lmkd" name="android_system_memory_lmkd" groups="pdk" remote="axion" />
+
+  <!-- Vendor  -->
+  <project path="vendor/addons" name="android_vendor_addons" remote="axion" />
+  <project path="vendor/lineage" name="android_vendor_lineage" remote="axion" />
+  <project path="vendor/official_devices" name="official_devices" remote="axion" revision="main" />
+  <project path="vendor/gapps" name="vendor_gapps" remote="axion-gitlab" revision="vic" />
+</manifest>
