@@ -8,6 +8,13 @@
           revision="refs/heads/lineage-22.2"
           review="review.lineageos.org" />
 
+  <remote name="axion_devices"
+          fetch="https://github.com/AxionAOSP-devices/"
+          sync-c="true"
+          sync-j="4"
+          revision="refs/heads/lineage-22.2"
+          review="review.lineageos.org" />
+
   <remote name="axion-gitlab"
           fetch="https://gitlab.com/AxionAOSP/"
           sync-c="true"
