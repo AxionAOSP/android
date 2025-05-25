@@ -146,4 +146,5 @@
   <project path="vendor/lineage" name="android_vendor_lineage" remote="axion" />
   <project path="vendor/official_devices" name="official_devices" remote="axion" revision="main" />
   <project path="vendor/gapps" name="vendor_gapps" remote="axion-gitlab" revision="vic" />
+  <project path="vendor/qcom/opensource/power" name="android_vendor_qcom_opensource_power" groups="qcom,lanai-vendor" remote="axion" />
 </manifest>
