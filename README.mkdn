@@ -1,36 +1,259 @@
-LineageOS
-===========
+# AxionOS
 
-Getting started
----------------
+## Getting Started
 
-To get started with Android/LineageOS, you'll need to get familiar with [Source Control Tools](https://source.android.com/setup/develop).
+AxionOS is based on the Android Open Source Project (AOSP) with extra performance and some customization features.  
+This guide will walk you through downloading the source code, setting up the build environment, and configuring your device tree.
 
-To initialize your local repository using the LineageOS trees, use a command like this:
+### Download the Source
+
+First, initialize the repo:
+
+```bash
+repo init -u https://github.com/AxionAOSP/android.git -b lineage-23.2 --git-lfs
 ```
-repo init -u https://github.com/LineageOS/android.git -b lineage-23.2 --git-lfs
-```
-Then to sync up:
-```
+
+Then sync the source code:
+
+```bash
 repo sync
 ```
-Please see the [LineageOS Wiki](https://wiki.lineageos.org/) for building instructions, by device.
+
+### Set up Build Environment
+
+Follow the [LineageOS build guide](https://wiki.lineageos.org/devices/) to install the required packages.  
+Then configure the build environment:
+
+```bash
+. build/envsetup.sh
+```
+
+---
+
+## Device Tree Setup
+
+AxionOS builds on top of LineageOS, so you should start from a LineageOS-compatible device tree.  
+Add this to your device makefile:
+
+```make
+TARGET_DISABLE_EPPE := true
+$(call inherit-product, vendor/lineage/config/common_full_phone.mk)
+```
+
+Optional flags:
+
+- **Enable blur effects**  
+  ```make
+  TARGET_ENABLE_BLUR := true
+  ```
+
+- **Enable ViPER4AndroidFX**  
+  ```make
+  TARGET_INCLUDE_VIPERFX := true
+  ```
+  (Disabled by default. Requires proper drivers and libraries.)  
+  See the [ViPER4AndroidFX ReadMe](https://github.com/AxionAOSP/android_packages_apps_ViPER4AndroidFX/blob/lineage-23.2/README.md).
+
+- **Enable debugging**  
+  ```make
+  add in product overrides or set using console: adb shell setprop persist.sys.ax_debug_enabled 1 
+  persist.sys.ax_debug_enabled=1
+  ```
+  (Disabled by default. Meant for debugging purposes - bootloop, aidl/hardware dependency by sepolicy failure, etc)  
+
+---
+
+## AxionOS Device Properties
+
+AxionOS supports custom properties for "About phone" and system optimization.  
+Set these in your device tree:
+
+```make
+# Camera information (multiple sensors supported)
+AXION_CAMERA_REAR_INFO := 50,48
+AXION_CAMERA_FRONT_INFO := 42
+
+# Maintainer name (underscores become spaces in the UI)
+AXION_MAINTAINER := rmp_22
+
+# Processor name (underscores become spaces)
+AXION_PROCESSOR := Snapdragon_CPU_1
+```
+
+These are automatically exported to system properties at build time.
+
+---
+
+## Firmware Configuration
+
+AxionOS added properties and flags to tune the OS for device experience.
+You can enable or disable them in your device makefile:
+
+```make
+# Charging
+BYPASS_CHARGE_SUPPORTED ?= false
+# Path for charge toggle
+BYPASS_CHARGE_TOGGLE_PATH ?= /sys/class/power_supply/battery/input_suspend
+# Path for level path in case device does not support charge toggle
+BYPASS_CHARGE_LEVEL_PATH ?= /sys/devices/platform/google,charger/charge_stop_level
+
+# CPU governor support
+PERF_GOV_SUPPORTED := false
+PERF_DEFAULT_GOV := schedutil
+PERF_ANIM_OVERRIDE := false
+
+# GPU
+GPU_FREQS_PATH := /sys/devices/platform/28000000.mali/available_frequencies
+GPU_MIN_FREQ_PATH := /sys/devices/platform/28000000.mali/hint_min_freq
+
+# High Brightness Mode (HBM)
+HBM_SUPPORTED := false
+HBM_NODE := /sys/class/backlight/panel0-backlight/hbm_mode
+
+# Flashlight strength
+TORCH_STR_SUPPORTED := false
+
+# doze fix
+# for devices with doze/sensor related issues 
+TARGET_NEEDS_DOZE_FIX := false
+
+# do not enable TARGET_IS_LOW_RAM if your device ram is greater than 4gb
+# else OOM will most likely occur on operations where applications and camera can fill heap limit
+# e.g uploading video/media on apps with camera preview
+# this is a mitigation targets legacy devices 4gb below
+# Using quicken is a trade-off: here we trade clean pages for dirty pages,
+# extra cpu and battery. That's because the quicken files will be jit-ed in all
+# the processes that load of shared apk and the code cache is not shared.
+# Some notable apps that will be affected by this are gms and chrome.
+TARGET_IS_LOW_RAM ?= false
+
+# refresh rate list (optional) - defining this flags makes the controller skip the parsing of Display.Mode refresh rates
+# for supported refresh rates. The refresh rate controller will also assume that all the defined refresh rates are "supported"
+TARGET_SUPPORTED_REFRESH_RATES := 60,75,90,120,144
+```
+
+- **Bypass Charging**: Allows charging while keeping the battery percentage fixed.  
+  If supported, you must also add a SELinux rule for the `input_suspend` node.
+
+- **Governor Support**: Allows switching CPU governors if supported by your kernel.  
+
+- **High Brightness Mode (HBM)**: Enable if your panel supports a high brightness toggle.  
+
+- **Flashlight strength**: Enable if torch supports strength changes.  
+
+## ScrollOptimizer
+
+ScrollOptimizer is an AxionOS feature that optimizes frame pacing and buffer handling during UI scroll and fling operations.
+It improves touch responsiveness and reduces rendering latency, ported from Linaro’s proprietary implementation.
+
+### Properties
+
+```make
+# Enable or disable ScrollOptimizer globally
+persist.sys.perf.scroll_opt = true
+
+# Heavy app handling mode
+# 0 - Disable heavy app classification
+# 1 - Enable dynamic detection (based on frame duration and buffer load)
+# 2 - Treat all apps as heavy for performance
+persist.sys.perf.scroll_opt.heavy_app = 2
+```
+**Source:** [ScrollOptimizer.java](https://github.com/AxionAOSP/android_frameworks_base/blob/lineage-23.2/core/java/com/android/internal/util/ScrollOptimizer.java)
+---
+
+## SEPolicy Adjustments
+
+Some devices need SELinux adjustments to allow AxionOS performance tuning.  
+
+# Performance mode
+- If your device uses standard labels, add rules like this to your device tree:
+
+```genfs_context
+genfscon proc /sys/vm/dirty_writeback_centisecs     u:object_r:proc_dirty:s0
+genfscon proc /sys/vm/vfs_cache_pressure            u:object_r:proc_drop_caches:s0
+genfscon proc /sys/vm/dirty_ratio                   u:object_r:proc_dirty:s0
+genfscon proc /sys/kernel/sched_migration_cost_ns   u:object_r:proc_sched:s0
+
+```
+
+# GPU boost
+- To allow boost framework to access your device gpu nodes, add genfs context for your node and label it as `sysfs_gpu`
+```genfs_context
+genfscon sysfs /devices/platform/1c500000.mali/available_frequencies                   u:object_r:sysfs_gpu:s0
+genfscon sysfs /devices/platform/1c500000.mali/hint_min_freq                   u:object_r:sysfs_gpu:s0
+
+```
 
 
-Submitting patches
-------------------
-Patches are always welcome! Please submit your patches via LineageOS Gerrit!
+# SEPolicy conflicts
+- If your device uses different OEM labels (common on MediaTek or Qualcomm), add `allow` rules instead of relabeling.
+```init.te
+allow init proc_vm_dirty:file rw_file_perms;
+allow init proc_dirty_ratio:file rw_file_perms;
+```
+---
 
-Simply follow our guide on [how to submit patches](https://wiki.lineageos.org/submitting-patch-howto.html).
+## Prebuilt LineageOS Apps
 
-To view the status of your and others' patches, visit [LineageOS Gerrit Code Review](https://review.lineageos.org/).
+You can choose whether to include LineageOS prebuilt apps.  
+Default is disabled.
 
+```make
+TARGET_INCLUDES_LOS_PREBUILTS := true/false
+```
 
-Buildbot
---------
+---
 
-All supported devices are built weekly and periodically as changes are committed to ensure the source trees remain buildable.
+## Building AxionOS
 
-You can view the current build statuses at [LineageOS Buildkite](https://buildkite.com/lineageos).
+### Generate Private Keys
 
-Builds produced weekly by the buildbot can be downloaded from [LineageOS downloads](https://download.lineageos.org/).
+Run once before building:
+
+```bash
+gk -s
+```
+
+### Choose Device
+
+To configure your device build:
+
+```bash
+axion <device_codename> [variant]
+```
+
+Variants:
+- `gms core` → Core Google Mobile Services (default if no variant given)  
+- `gms pico` → Minimal Google apps  
+- `va` → Vanilla (no GMS)  
+
+Example:
+
+```bash
+axion panther gms pico
+```
+
+### Sync Updates
+
+To update your source after the first sync:
+
+```bash
+axionSync
+```
+
+### Build the ROM
+
+Finally, compile:
+
+```bash
+ax -br -j<count>
+```
+
+Replace `<count>` with the number of CPU threads you want to use (e.g. `ax -j16`).
+
+---
+
+## Credits
+
+AxionOS is based on the work of the Android Open Source Project (AOSP) and LineageOS.  
+Thanks to all contributors for their hard work.
