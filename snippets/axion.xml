@@ -222,7 +222,6 @@
   <project path="packages/apps/Twelve" name="android_packages_apps_Twelve" remote="axion" />
   <project path="packages/apps/Updater" name="android_packages_apps_Updater" remote="axion" />
   <project path="packages/apps/VendorSupport" name="android_packages_apps_VendorSupport" groups="pdk-fs" remote="axion" />
-  <project path="packages/apps/ViPER4AndroidFX" name="android_packages_apps_ViPER4AndroidFX" remote="axion" />
 
   <!-- AOSP Packages  -->
   <project path="packages/apps/Car/SystemUI" name="android_packages_apps_Car_SystemUI" groups="pdk-fs,pdk-cw-tvc" remote="axion" />
