@@ -46,6 +46,7 @@
   <remove-project path="external/setupcompat" />
   <remove-project path="external/tinycompress" />
   <remove-project path="external/wpa_supplicant_8" />
+  <remove-project path="external/zlib" />
   <remove-project path="external/zstd" />
   <remove-project path="lineage-sdk" />
   <remove-project path="frameworks/av" />
@@ -173,6 +174,7 @@
   <project path="external/setupcompat" name="android_external_setupcompat" groups="pdk,sysui-studio" remote="axion" />
   <project path="external/tinycompress" name="android_external_tinycompress" groups="pdk" remote="axion" />
   <project path="external/wpa_supplicant_8" name="android_external_wpa_supplicant_8" groups="pdk" remote="axion" />
+  <project path="external/zlib-ng" name="android_external_zlib-ng" groups="pdk" remote="axion" />
   <project path="external/zstd" name="android_external_zstd" remote="axion" />
 
   <!-- Lineage SDK  -->
