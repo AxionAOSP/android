@@ -43,6 +43,7 @@
   <remove-project path="external/e2fsprogs" />
   <remove-project path="external/gptfdisk" />
   <remove-project path="external/mksh" />
+  <remove-project path="external/pffft" />
   <remove-project path="external/setupcompat" />
   <remove-project path="external/tinycompress" />
   <remove-project path="external/wpa_supplicant_8" />
@@ -172,7 +173,9 @@
   <project path="external/e2fsprogs" name="android_external_e2fsprogs" groups="pdk" remote="axion" />
   <project path="external/gptfdisk" name="android_external_gptfdisk" groups="pdk" remote="axion" />
   <project path="external/mksh" name="android_external_mksh" groups="pdk" remote="axion" />
+  <project path="external/pffft" name="android_external_pffft" groups="pdk" remote="axion" />
   <project path="external/setupcompat" name="android_external_setupcompat" groups="pdk,sysui-studio" remote="axion" />
+  <project path="external/steam-audio" name="android_external_steam-audio" remote="axion" />
   <project path="external/tinycompress" name="android_external_tinycompress" groups="pdk" remote="axion" />
   <project path="external/wpa_supplicant_8" name="android_external_wpa_supplicant_8" groups="pdk" remote="axion" />
   <project path="external/zlib-ng" name="android_external_zlib-ng" groups="pdk" remote="axion" />
@@ -204,6 +207,7 @@
   <project path="kernel/configs" name="android_kernel_configs" groups="vts,pdk" remote="axion" />
 
   <!-- Axion Packages  -->
+  <project path="packages/apps/AxionFx" name="android_packages_apps_AxionFx" remote="axion" />
   <project path="packages/apps/AxThemePicker" name="android_packages_apps_AxThemePicker" groups="pdk-fs,sysui-studio" remote="axion" />
   <project path="packages/apps/AxThemeStore" name="android_packages_apps_AxThemeStore" groups="pdk-fs,sysui-studio" remote="axion" />
   <project path="packages/apps/AxSandbox" name="android_packages_apps_AxSandbox" groups="pdk-fs,sysui-studio" remote="axion" />
