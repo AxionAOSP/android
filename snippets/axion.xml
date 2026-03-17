@@ -127,6 +127,7 @@
   <remove-project path="system/sepolicy" />
   <remove-project path="system/update_engine" />
   <remove-project path="system/vold" />
+  <remove-project path="toolchain/pgo-profiles" />
   <remove-project path="vendor/crowdin" />
   <remove-project path="vendor/lineage" />
   <remove-project path="vendor/qcom/opensource/commonsys-intf/display" />
@@ -287,6 +288,8 @@
   <project path="system/sepolicy" name="android_system_sepolicy" groups="pdk" remote="axion" />
   <project path="system/update_engine" name="android_system_update_engine" groups="pdk" remote="axion" />
   <project path="system/vold" name="android_system_vold" groups="pdk" remote="axion" />
+  
+  <project path="toolchain/pgo-profiles" name="android_toolchain_pgo-profiles" groups="pdk" remote="axion" />
 
   <!-- Vendor  -->
   <project path="vendor/addons" name="android_vendor_addons" remote="axion" />
