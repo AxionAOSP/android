@@ -45,6 +45,7 @@
   <remove-project path="external/mksh" />
   <remove-project path="external/pffft" />
   <remove-project path="external/setupcompat" />
+  <remove-project path="external/sqlite" />
   <remove-project path="external/tinycompress" />
   <remove-project path="external/wpa_supplicant_8" />
   <remove-project path="external/zlib" />
@@ -175,6 +176,7 @@
   <project path="external/mksh" name="android_external_mksh" groups="pdk" remote="axion" />
   <project path="external/pffft" name="android_external_pffft" groups="pdk" remote="axion" />
   <project path="external/setupcompat" name="android_external_setupcompat" groups="pdk,sysui-studio" remote="axion" />
+  <project path="external/sqlite" name="android_external_sqlite" groups="pdk" remote="axion" />
   <project path="external/steam-audio" name="android_external_steam-audio" remote="axion" />
   <project path="external/tinycompress" name="android_external_tinycompress" groups="pdk" remote="axion" />
   <project path="external/wpa_supplicant_8" name="android_external_wpa_supplicant_8" groups="pdk" remote="axion" />
