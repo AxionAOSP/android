@@ -19,7 +19,7 @@
           fetch="https://gitlab.com/AxionAOSP/"
           sync-c="true"
           sync-j="4"
-          revision="refs/heads/lineage-23.0" />
+          revision="refs/heads/lineage-23.2" />
 
   <!-- Remove project -->
   <remove-project path="android" />
@@ -230,7 +230,7 @@
   <project path="packages/apps/EdgeLauncher" name="android_packages_apps_EdgeLauncher" groups="pdk-fs" remote="axion" />
   <project path="packages/apps/Etar" name="android_packages_apps_Etar" remote="axion" />
   <project path="packages/apps/ExactCalculator" name="android_packages_apps_ExactCalculator" remote="axion" />
-  <project path="packages/apps/FaceUnlock" name="android_packages_apps_AxFaceUnlock" remote="axion" />
+  <project path="packages/apps/FaceUnlock" name="android_packages_apps_FaceUnlock" remote="axion-gitlab" revision="lineage-23.2" />
   <project path="packages/apps/GameSpace" name="android_packages_apps_GameSpace" groups="pdk-fs" remote="axion" />
   <project path="packages/apps/Glimpse" name="android_packages_apps_Glimpse" remote="axion" />
   <project path="packages/apps/LineageParts" name="android_packages_apps_LineageParts" remote="axion" />
