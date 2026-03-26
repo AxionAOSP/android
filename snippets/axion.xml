@@ -57,6 +57,7 @@
   <remove-project path="frameworks/base" />
   <remove-project path="frameworks/libs/systemui" />
   <remove-project path="frameworks/native" />
+  <remove-project path="frameworks/opt/net/wifi" />
   <remove-project path="frameworks/opt/telephony" />
   <remove-project path="hardware/broadcom/libbt" />
   <remove-project path="hardware/google/camera" />
@@ -195,6 +196,7 @@
   <project path="frameworks/base" name="android_frameworks_base" groups="pdk-cw-fs,pdk-fs,sysui-studio" remote="axion" />
   <project path="frameworks/libs/systemui" name="android_frameworks_libs_systemui" groups="pdk-cw-fs,pdk-fs,sysui-studio" remote="axion" />
   <project path="frameworks/native" name="android_frameworks_native" groups="pdk-cw-fs,pdk-fs,sysui-studio" remote="axion" />
+  <project path="frameworks/opt/net/wifi" name="android_frameworks_opt_net_wifi" groups="pdk,sysui-studio" remote="axion" />
   <project path="frameworks/opt/telephony" name="android_frameworks_opt_telephony" groups="pdk" remote="axion" />
   
   <!-- Hardware  -->
