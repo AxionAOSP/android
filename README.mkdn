@@ -47,13 +47,10 @@ Optional flags:
   TARGET_ENABLE_BLUR := true
   ```
 
-- **Enable ViPER4AndroidFX**  
+- **Enable AxionFx**  
   ```make
-  TARGET_INCLUDE_VIPERFX := true
+  TARGET_INCLUDE_AXFX := true
   ```
-  (Disabled by default. Requires proper drivers and libraries.)  
-  See the [ViPER4AndroidFX ReadMe](https://github.com/AxionAOSP/android_packages_apps_ViPER4AndroidFX/blob/lineage-23.2/README.md).
-
 - **Enable debugging**  
   ```make
   add in product overrides or set using console: adb shell setprop persist.sys.ax_debug_enabled 1 
@@ -102,20 +99,18 @@ PERF_GOV_SUPPORTED := false
 PERF_DEFAULT_GOV := schedutil
 PERF_ANIM_OVERRIDE := false
 
-# GPU
-GPU_FREQS_PATH := /sys/devices/platform/28000000.mali/available_frequencies
-GPU_MIN_FREQ_PATH := /sys/devices/platform/28000000.mali/hint_min_freq
-
 # High Brightness Mode (HBM)
 HBM_SUPPORTED := false
 HBM_NODE := /sys/class/backlight/panel0-backlight/hbm_mode
 
-# Flashlight strength
-TORCH_STR_SUPPORTED := false
-
-# doze fix
+# doze flags
 # for devices with doze/sensor related issues 
 TARGET_NEEDS_DOZE_FIX := false
+# doze gestures
+TARGET_DOZE_TAP_PULSE_SUPPORTED ?= false
+TARGET_DOZE_DOUBLE_TAP_PULSE_SUPPORTED ?= false
+TARGET_DOZE_PICKUP_PULSE_SUPPORTED ?= false
+TARGET_DOZE_SIDE_FPS_PULSE_SUPPORTED ?= false
 
 # do not enable TARGET_IS_LOW_RAM if your device ram is greater than 4gb
 # else OOM will most likely occur on operations where applications and camera can fill heap limit
