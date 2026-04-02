@@ -127,6 +127,7 @@
   <remove-project path="system/logging" />
   <remove-project path="system/media" />
   <remove-project path="system/memory/lmkd" />
+  <remove-project path="system/memory/libmeminfo" />
   <remove-project path="system/netd" />
   <remove-project path="system/security" />
   <remove-project path="system/sepolicy" />
@@ -298,6 +299,7 @@
   <project path="system/logging" name="android_system_logging" groups="pdk" remote="axion" />
   <project path="system/media" name="android_system_media" groups="pdk" remote="axion" />
   <project path="system/memory/lmkd" name="android_system_memory_lmkd" groups="pdk" remote="axion" />
+  <project path="system/memory/libmeminfo" name="android_system_memory_libmeminfo" groups="pdk" remote="axion" />
   <project path="system/netd" name="android_system_netd" groups="pdk" remote="axion" />
   <project path="system/security" name="android_system_security" groups="pdk" remote="axion" />
   <project path="system/sepolicy" name="android_system_sepolicy" groups="pdk" remote="axion" />
