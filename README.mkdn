@@ -218,14 +218,14 @@ axion <device_codename> [variant]
 ```
 
 Variants:
-- `gms core` → Core Google Mobile Services (default if no variant given)  
-- `gms pico` → Minimal Google apps  
-- `va` → Vanilla (no GMS)  
+- `gms` → Full Google Mobile Services
+- `gms core` → Core Google Mobile Services
+- `va` → Vanilla (no GMS) | (default if no variant given)
 
 Example:
 
 ```bash
-axion panther gms pico
+axion panther gms
 ```
 
 ### Sync Updates
