@@ -87,6 +87,10 @@ AxionOS added properties and flags to tune the OS for device experience.
 You can enable or disable them in your device makefile:
 
 ```make
+# GPU boosts for blur etc
+GPU_FREQS_PATH := /sys/devices/platform/28000000.mali/available_frequencies
+GPU_MIN_FREQ_PATH := /sys/devices/platform/28000000.mali/hint_min_freq
+
 # Charging
 BYPASS_CHARGE_SUPPORTED ?= false
 # Path for charge toggle
