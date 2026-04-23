@@ -82,6 +82,7 @@
   <remove-project path="packages/apps/EmergencyInfo" />
   <remove-project path="packages/apps/Etar" />
   <remove-project path="packages/apps/ExactCalculator" />
+  <remove-project path="packages/apps/DeskClock" />
   <remove-project path="packages/apps/Glimpse" />
   <remove-project path="packages/apps/Launcher3" />
   <remove-project path="packages/apps/Messaging" />
@@ -226,6 +227,7 @@
   <project path="packages/apps/AppLocker" name="android_packages_apps_AppLocker" groups="pdk-fs" remote="axion" />
   <project path="packages/apps/AxionParts" name="android_packages_apps_AxionParts" groups="pdk-fs,sysui-studio" remote="axion" />
   <project path="packages/apps/AxionWidgets" name="android_packages_apps_AxionWidgets" groups="pdk-fs" remote="axion" />
+  <project path="packages/apps/DeskClock" name="android_packages_apps_DeskClock" groups="pdk-fs" remote="axion" />
   <project path="packages/apps/Backgrounds" name="android_packages_apps_Backgrounds" groups="pdk-fs" remote="axion" />
   <project path="packages/apps/ColumbusService" name="android_packages_apps_ColumbusService" groups="pdk-fs" remote="axion" />
   <project path="packages/apps/EdgeLauncher" name="android_packages_apps_EdgeLauncher" groups="pdk-fs" remote="axion" />
