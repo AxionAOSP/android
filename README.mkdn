@@ -83,13 +83,20 @@ These are automatically exported to system properties at build time.
 
 ## Firmware Configuration
 
+# Setting up burst engine hardware support
+1. setup device hardware nodes permissions
+2. setup ax_perf_config.xml and add to PRODUCT_COPY_FILES
+3. tune ax_perf_config according to needs
+4. disable oem or libperfmgr boost (TARGET_DISABLES_LIBPERF := true)
+
+**example bringup + ax_perf_config template:** [Aerodactyl bringup](https://github.com/AxionAOSP-devices/android_device_nothing_Aerodactyl/commit/a8ed394f4f6ae7aa50b2c07246232259ecc58e03)
+
 AxionOS added properties and flags to tune the OS for device experience.
 You can enable or disable them in your device makefile:
 
 ```make
-# GPU boosts for blur etc
-GPU_FREQS_PATH := /sys/devices/platform/28000000.mali/available_frequencies
-GPU_MIN_FREQ_PATH := /sys/devices/platform/28000000.mali/hint_min_freq
+# safely disable libperfmgr without breaking boot (set to true)
+TARGET_DISABLES_LIBPERF ?= false
 
 # Charging
 BYPASS_CHARGE_SUPPORTED ?= false
@@ -174,15 +181,6 @@ genfscon proc /sys/vm/dirty_ratio                   u:object_r:proc_dirty:s0
 genfscon proc /sys/kernel/sched_migration_cost_ns   u:object_r:proc_sched:s0
 
 ```
-
-# GPU boost
-- To allow boost framework to access your device gpu nodes, add genfs context for your node and label it as `sysfs_gpu`
-```genfs_context
-genfscon sysfs /devices/platform/1c500000.mali/available_frequencies                   u:object_r:sysfs_gpu:s0
-genfscon sysfs /devices/platform/1c500000.mali/hint_min_freq                   u:object_r:sysfs_gpu:s0
-
-```
-
 
 # SEPolicy conflicts
 - If your device uses different OEM labels (common on MediaTek or Qualcomm), add `allow` rules instead of relabeling.
