@@ -216,18 +216,32 @@ gk -s
 To configure your device build:
 
 ```bash
-axion <device_codename> [variant]
+axion <device_codename> [user|userdebug|eng] [gms|pico|core|full|va]
 ```
 
-Variants:
-- `gms` → Full Google Mobile Services
-- `gms core` → Core Google Mobile Services
-- `va` → Vanilla (no GMS) | (default if no variant given)
+Build type defaults to `userdebug` if omitted.
+
+GMS variants:
+- `gms` / `full` → Full Google Mobile Services
+- `pico` → Minimal Google Mobile Services
+- `core` → Core Google Mobile Services
+- `va` / `vanilla` → Non-GMS build
+
+If no GMS variant is specified, `axion` defaults to a non-GMS build.
+
+The build flavor shown in the output zip/version is one of:
+- `GMS`
+- `PICO`
+- `CORE`
+- `VANILLA`
 
 Example:
 
 ```bash
 axion panther gms
+axion panther pico
+axion panther core
+axion panther va
 ```
 
 ### Sync Updates
