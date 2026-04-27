@@ -227,6 +227,22 @@ GMS variants:
 - `core` → Core Google Mobile Services
 - `va` / `vanilla` → Non-GMS build
 
+Optional GMS package flags:
+
+```make
+# Telecom-related Google apps/services bundle.
+# Defaults: false for pico, true for core/gms.
+TARGET_INCLUDE_GOOGLE_TELECOMM := true/false
+
+# Google setup/partner setup bundle.
+# Defaults: false for pico/core, true for gms.
+TARGET_INCLUDE_PARTNER_SETUP := true/false
+```
+
+These flags are overridable from your device/product makefile. For example, use
+`TARGET_INCLUDE_GOOGLE_TELECOMM := true` to include the telecom bundle on pico,
+or `TARGET_INCLUDE_PARTNER_SETUP := false` to exclude setup packages from core/gms.
+
 If no GMS variant is specified, `axion` defaults to a non-GMS build.
 
 The build flavor shown in the output zip/version is one of:
@@ -242,6 +258,14 @@ axion panther gms
 axion panther pico
 axion panther core
 axion panther va
+```
+
+### Adding flags without adding flags to tree
+axion has scripts for writing flags without needing to add flags to tree
+```bash
+writeFlag TARGET_INCLUDE_GOOGLE_TELECOMM false
+removeFlag TARGET_INCLUDE_GOOGLE_TELECOMM
+clearFlags -- removes all flags written via writeFlag
 ```
 
 ### Sync Updates
