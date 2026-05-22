@@ -209,6 +209,7 @@
   <project path="hardware/lineage/compat" name="android_hardware_lineage_compat" remote="axion" />
   <project path="hardware/interfaces" name="android_hardware_interfaces" groups="pdk,sysui-studio" remote="axion" />
   <project path="hardware/libhardware" name="android_hardware_libhardware" groups="pdk" remote="axion" />
+  <project path="hardware/qcom-caf/sdm660/display" name="android_hardware_qcom_display" groups="qcom" revision="lineage-23.2-caf-sdm660" remote="axion" />
   <project path="hardware/qcom/wlan" name="android_hardware_qcom_wlan" groups="qcom,qcom_wlan,pdk-qcom" remote="axion" />
   <project path="hardware/st/nfc" name="android_hardware_st_nfc" groups="pdk" remote="axion"/>
   <project path="hardware/samsung/nfc" name="android_hardware_samsung_nfc" groups="pdk" remote="axion"/>
