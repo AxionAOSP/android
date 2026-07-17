@@ -43,6 +43,7 @@
   <remove-project path="external/e2fsprogs" />
   <remove-project path="external/gptfdisk" />
   <remove-project path="external/jemalloc_new" />
+  <remove-project path="external/libjpeg-turbo" />
   <remove-project path="external/mksh" />
   <remove-project path="external/pffft" />
   <remove-project path="external/pthreadpool" />
@@ -181,6 +182,7 @@
   <project path="external/e2fsprogs" name="android_external_e2fsprogs" groups="pdk" remote="axion" />
   <project path="external/gptfdisk" name="android_external_gptfdisk" groups="pdk" remote="axion" />
   <project path="external/jemalloc_new" name="android_external_jemalloc_new" groups="pdk" remote="axion" />
+  <project path="external/libjpeg-turbo" name="android_external_libjpeg-turbo" groups="pdk" remote="axion" />
   <project path="external/mksh" name="android_external_mksh" groups="pdk" remote="axion" />
   <project path="external/pffft" name="android_external_pffft" groups="pdk" remote="axion" />
   <project path="external/pthreadpool" name="android_external_pthreadpool" groups="pdk" remote="axion" />
