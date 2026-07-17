@@ -42,11 +42,6 @@ $(call inherit-product, vendor/lineage/config/common_full_phone.mk)
 
 Optional flags:
 
-- **Enable blur effects**  
-  ```make
-  TARGET_ENABLE_BLUR := true
-  ```
-
 - **Enable AxionFx**  
   ```make
   TARGET_INCLUDE_AXFX := true
@@ -83,125 +78,6 @@ These are automatically exported to system properties at build time.
 
 ## Firmware Configuration
 
-### Setting up AxBurstEngine hardware support
-
-AxBurstEngine is AxionOS' native sysfs boost engine. Device trees provide the
-hardware mapping through split XML files, then copy them to `vendor/etc`:
-
-```make
-PRODUCT_COPY_FILES += \
-    device/<vendor>/<codename>/configs/axion/ax_perf_resources.xml:$(TARGET_COPY_OUT_VENDOR)/etc/ax_perf_resources.xml \
-    device/<vendor>/<codename>/configs/axion/ax_perf_boosts.xml:$(TARGET_COPY_OUT_VENDOR)/etc/ax_perf_boosts.xml \
-    device/<vendor>/<codename>/configs/axion/ax_perf_thermal.xml:$(TARGET_COPY_OUT_VENDOR)/etc/ax_perf_thermal.xml \
-    device/<vendor>/<codename>/configs/axion/ax_perf_threads.xml:$(TARGET_COPY_OUT_VENDOR)/etc/ax_perf_threads.xml
-
-TARGET_DISABLES_LIBPERF := true
-```
-
-Bring-up checklist:
-
-1. Add writable permissions for every sysfs/proc/cgroup node used by the XMLs
-   through `init.rc` and/or `ueventd.rc`. Some kernel-created nodes must be
-   owned by `system` and writable by `system_server` (for example `0644 system`).
-2. Add SELinux labels and `system_server` allow rules for every node that
-   AxBurstEngine needs to read or write.
-3. Copy the four split XML files above. The current engine does **not** use a
-   monolithic `ax_perf_config.xml`.
-4. Tune resource values for the device's real CPU/GPU topology and vendor nodes.
-5. Disable OEM/libperfmgr boosting with `TARGET_DISABLES_LIBPERF := true`;
-   competing boost stacks can fight AxBurstEngine over CPU min/max and GPU nodes.
-
-Example bring-up and templates: [Aerodactyl AxBurstEngine v2 config commit](https://github.com/AxionAOSP-devices/android_device_nothing_Aerodactyl/commit/133088eb9b90b70791051ef71ca2f5cfdef84811).
-
-### AxBurstEngine XML files
-
-The native loader first reads `/vendor/etc/ax_perf_resources.xml` and
-`/vendor/etc/ax_perf_boosts.xml`, then falls back to `/system/etc` if vendor
-files are missing. Thermal and UX-thread XMLs are parsed by the Java-side
-`AxPerfConfig` helper from the same vendor-then-system locations.
-
-#### `ax_perf_resources.xml`
-
-Defines every writable hardware node that a boost can touch. Each resource ID
-must be unique and is referenced by boosts with the same hex ID.
-
-```xml
-<resource id="0x001a" name="task_turbo"
-          path="/sys/module/task_turbo/parameters/feats" default="0" />
-```
-
-- `id`: unique resource identifier used by `<set id="..." />`.
-- `name`: human-readable label for maintainers.
-- `path`: sysfs/proc/cgroup node written by `system_server`.
-- `default`: fallback value used when a `<set>` references this resource without
-  an explicit `value`. Release normally restores the saved base/original node
-  value, not necessarily this XML default.
-
-#### `ax_perf_boosts.xml`
-
-Defines the actual boost hints exposed through `AxBoostFwk` opcodes.
-
-```xml
-<boost-resource id="0x01fd" name="latency_boost">
-    <set resource="cpu_min_sup" id="0x0005" value="2800000" />
-    <set resource="uclamp_top_min" id="0x0014" value="100" />
-</boost-resource>
-
-<boost opcode="1" timeout_ms="3000" name="first_launch"
-       uc="SvpPolicy" dc="MaxPerformance">
-    <set resource="latency_boost" id="0x01fd" />
-</boost>
-```
-
-- `<boost-resource>` is an optional reusable group. It is expanded only when a
-  boost references its ID without a `value`.
-- `<boost>` must use an opcode from `android.app.AxBoostFwk`. `timeout_ms` is
-  the default duration used when callers request the XML default. Use `0` only
-  for indefinite boosts that are explicitly released.
-- `<set id="..." value="..." />` writes `value` to the resource path mapped in
-  `ax_perf_resources.xml`. If `value` is omitted for a direct resource, the
-  resource `default` is used.
-- `uc` and `dc` are optional task profile names. `uc` is applied to the current
-  top-app process/render thread while the boost is active; `dc` is applied as
-  the fallback profile on release.
-
-Active boosts are reference-counted per path. When overlapping boosts touch the
-same node, the most recent active value wins; releasing it restores the previous
-active value or the saved base/original node value.
-
-#### `ax_perf_thermal.xml`
-
-Defines Advanced Thermal Mitigation (ATMC) data under `<perf-config><atmc>`.
-Important sections are:
-
-- `<cpu_levels>`: per thermal status CPU caps matching the device clusters.
-  Values below `10000` are treated as MHz and converted to kHz by the framework;
-  larger values are treated as already-kHz. For example, Aerodactyl uses
-  `little="480,2000" big="400,2800"` for its two-cluster MTK layout.
-- `<gpu_levels>`: device-specific GPU min/max levels. On MediaTek GED/GPUFREQ
-  devices these may be OPP indices, not MHz.
-- `<boost_scenarios>`, `<scenes>`, `<apps>`, `<complexes>`, and
-  `<buffer_rates>`: maps thermal levels, packages, and scenarios to CPU/GPU,
-  boost, dexopt, background-killer, or FPS actions.
-
-#### `ax_perf_threads.xml`
-
-Defines uclamp defaults for known UX thread roles:
-
-```xml
-<role name="render" uclamp_min="512" uclamp_max="1024" />
-```
-
-`uclamp_min` and `uclamp_max` use the kernel uclamp scale (`0`-`1024`), not the
-cgroup percentage scale (`0`-`100`) used by `cpu.uclamp.min` nodes in boost XMLs.
-
-### AxBurstEngine vs libperfmgr
-
-libperfmgr reacts to standard PowerManager hints, modes, and ADPF sessions.
-AxBurstEngine is driven by Axion's `AxBoostFwk` call sites, which mirror common
-Qualcomm/MediaTek boost framework events such as launches, scrolling, frame
-rescue, rotations, shade, game, package install, and render-thread boosts.
-
 ### Axion Flags
 AxionOS added properties and flags to tune the OS for device experience.
 You can enable or disable them in your device makefile:
@@ -209,18 +85,6 @@ You can enable or disable them in your device makefile:
 ```make
 # safely disable libperfmgr without breaking boot (set to true)
 TARGET_DISABLES_LIBPERF ?= false
-
-# Charging
-BYPASS_CHARGE_SUPPORTED ?= false
-# Path for charge toggle
-BYPASS_CHARGE_TOGGLE_PATH ?= /sys/class/power_supply/battery/input_suspend
-# Path for level path in case device does not support charge toggle
-BYPASS_CHARGE_LEVEL_PATH ?= /sys/devices/platform/google,charger/charge_stop_level
-
-# CPU governor support
-PERF_GOV_SUPPORTED := false
-PERF_DEFAULT_GOV := schedutil
-PERF_ANIM_OVERRIDE := false
 
 # High Brightness Mode (HBM)
 HBM_SUPPORTED := false
@@ -234,49 +98,12 @@ TARGET_DOZE_TAP_PULSE_SUPPORTED ?= false
 TARGET_DOZE_DOUBLE_TAP_PULSE_SUPPORTED ?= false
 TARGET_DOZE_PICKUP_PULSE_SUPPORTED ?= false
 TARGET_DOZE_SIDE_FPS_PULSE_SUPPORTED ?= false
-
-# do not enable TARGET_IS_LOW_RAM if your device ram is greater than 4gb
-# else OOM will most likely occur on operations where applications and camera can fill heap limit
-# e.g uploading video/media on apps with camera preview
-# this is a mitigation targets legacy devices 4gb below
-# Using quicken is a trade-off: here we trade clean pages for dirty pages,
-# extra cpu and battery. That's because the quicken files will be jit-ed in all
-# the processes that load of shared apk and the code cache is not shared.
-# Some notable apps that will be affected by this are gms and chrome.
-TARGET_IS_LOW_RAM ?= false
-
-# refresh rate list (optional) - defining this flags makes the controller skip the parsing of Display.Mode refresh rates
-# for supported refresh rates. The refresh rate controller will also assume that all the defined refresh rates are "supported"
-TARGET_SUPPORTED_REFRESH_RATES := 60,75,90,120,144
 ```
 
 - **Bypass Charging**: Allows charging while keeping the battery percentage fixed.  
   If supported, you must also add a SELinux rule for the `input_suspend` node.
 
-- **Governor Support**: Allows switching CPU governors if supported by your kernel.  
-
 - **High Brightness Mode (HBM)**: Enable if your panel supports a high brightness toggle.  
-
-- **Flashlight strength**: Enable if torch supports strength changes.  
-
-## ScrollOptimizer
-
-ScrollOptimizer is an AxionOS feature that optimizes frame pacing and buffer handling during UI scroll and fling operations.
-It improves touch responsiveness and reduces rendering latency, ported from Linaro’s proprietary implementation.
-
-### Properties
-
-```make
-# Enable or disable ScrollOptimizer globally
-persist.sys.perf.scroll_opt = true
-
-# Heavy app handling mode
-# 0 - Disable heavy app classification
-# 1 - Enable dynamic detection (based on frame duration and buffer load)
-# 2 - Treat all apps as heavy for performance
-persist.sys.perf.scroll_opt.heavy_app = 2
-```
-**Source:** [ScrollOptimizer.java](https://github.com/AxionAOSP/android_frameworks_base/blob/lineage-23.2/core/java/com/android/internal/util/ScrollOptimizer.java)
 ---
 
 ## SEPolicy Adjustments
