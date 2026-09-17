@@ -72,6 +72,7 @@
   <remove-project path="hardware/samsung/nfc" />
   <remove-project path="hardware/qcom/wlan" />
   <remove-project path="hardware/lineage/compat" />
+  <remove-project path="hardware/lineage/interfaces" />
   <remove-project path="kernel/configs" />
   <remove-project path="packages/apps/Car/SystemUI" />
   <remove-project path="packages/apps/Car/Settings" />
@@ -214,6 +215,7 @@
   <project path="hardware/google/pixel" name="android_hardware_google_pixel" groups="generic_fs,pixel,pdk-gs-arm" remote="axion" />
   <project path="hardware/google/pixel-sepolicy" name="android_hardware_google_pixel-sepolicy" groups="generic_fs,pixel" remote="axion" />
   <project path="hardware/lineage/compat" name="android_hardware_lineage_compat" remote="axion" />
+  <project path="hardware/lineage/interfaces" name="android_hardware_lineage_interfaces" remote="axion" />
   <project path="hardware/interfaces" name="android_hardware_interfaces" groups="pdk,sysui-studio" remote="axion" />
   <project path="hardware/libhardware" name="android_hardware_libhardware" groups="pdk" remote="axion" />
   <project path="hardware/qcom-caf/sdm660/display" name="android_hardware_qcom_display" groups="qcom" revision="lineage-23.2-caf-sdm660" remote="axion" />
