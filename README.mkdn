@@ -104,6 +104,86 @@ TARGET_DOZE_SIDE_FPS_PULSE_SUPPORTED ?= false
   If supported, you must also add a SELinux rule for the `input_suspend` node.
 
 - **High Brightness Mode (HBM)**: Enable if your panel supports a high brightness toggle.  
+
+### Ax Kernel Manager
+
+Ax Kernel Manager configures CPU frequencies, CPU governors, and GPU clocks using sysfs nodes defined in `ax_kernel_manager.xml`.
+
+If your SoC is not already present in `device/axion/common/prebuilts/ax_kernel_manager_$(AXION_SOC).xml`, you can create and ship your own configuration in your device tree.
+
+#### Shipping in Device Tree
+
+Copy your XML to `$(TARGET_COPY_OUT_VENDOR)/etc/ax_kernel_manager.xml` (or `$(TARGET_COPY_OUT_SYSTEM_EXT)`):
+
+```make
+PRODUCT_COPY_FILES += \
+    $(LOCAL_PATH)/configs/kernel/ax_kernel_manager.xml:$(TARGET_COPY_OUT_VENDOR)/etc/ax_kernel_manager.xml
+```
+
+The loader checks `/odm/etc`, `/vendor/etc`, `/system_ext/etc`, and `/system/etc` in order.
+
+#### Configuration (`ax_kernel_manager.xml`)
+
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<kernel-manager>
+    <!-- CPU clusters -->
+    <cpu
+        id="little"
+        group="Little Cluster"
+        minId="axion_min_freq"
+        maxId="axion_max_freq"
+        governorId="little_cpu_governor"
+        node="/sys/devices/system/cpu/cpufreq/policy0" />
+
+    <cpu
+        id="big"
+        group="Big Cluster"
+        minId="axion_min_freq_big"
+        maxId="axion_max_freq_big"
+        governorId="big_cpu_governor"
+        node="/sys/devices/system/cpu/cpufreq/policy4" />
+
+    <!-- GPU (Qualcomm Adreno kgsl or ARM Mali devfreq) -->
+    <gpu
+        node="/sys/class/kgsl/kgsl-3d0/devfreq"
+        currentNode="/sys/class/kgsl/kgsl-3d0/gpuclk"
+        usageNode="/sys/class/kgsl/kgsl-3d0/gpu_busy_percentage"
+        frequencyMultiplier="1"
+        values="255000000,500000000,835000000,1000000000" />
+</kernel-manager>
+```
+
+- **`<cpu>` attributes**:
+  - `node`: Policy directory (e.g. `/sys/devices/system/cpu/cpufreq/policy0`). Automatically resolves child nodes: `scaling_min_freq`, `scaling_max_freq`, `scaling_cur_freq`, `scaling_available_frequencies`, `scaling_governor`, and `scaling_available_governors`. You can override any node individually (`minNode`, `maxNode`, `curFreqPath`, `availablePath`, `governorNode`, `governorAvailablePath`).
+  - `id` & `group`: Identifier and UI display name.
+  - `cpuIds`: Core range for metrics (e.g. `0-3`).
+  - `minId` / `maxId` / `governorId`: Settings keys used to persist frequencies and governors (e.g. `axion_min_freq`, `axion_max_freq`, `little_cpu_governor`).
+
+- **`<gpu>` attributes**:
+  - `node`: Base devfreq path. Automatically resolves `min_freq` and `max_freq` (overridable with `minNode` and `maxNode`).
+  - `currentNode`: Active clock path (`gpuclk` on Adreno, `cur_freq` on Mali).
+  - `usageNode`: GPU load or utilization path (`gpu_busy_percentage` on Adreno, `utilization` on Mali).
+  - `values`: Comma-separated list of supported frequencies (or set `availablePath`).
+  - `frequencyMultiplier`: Set `1` for Hz (Adreno) or `1000` for kHz (Mali).
+
+#### Device Permissions & SEPolicy
+
+Because `system_server` applies frequency and governor values at runtime, sysfs nodes must be writable:
+
+1. **`init.<device>.rc`**:
+   ```init.rc
+   on post-fs-data
+       chown system system /sys/devices/system/cpu/cpufreq/policy0/scaling_governor
+       chown system system /sys/devices/system/cpu/cpufreq/policy0/scaling_min_freq
+       chown system system /sys/devices/system/cpu/cpufreq/policy0/scaling_max_freq
+       chmod 0660 /sys/devices/system/cpu/cpufreq/policy0/scaling_governor
+       chmod 0660 /sys/devices/system/cpu/cpufreq/policy0/scaling_min_freq
+       chmod 0660 /sys/devices/system/cpu/cpufreq/policy0/scaling_max_freq
+   ```
+2. **SEPolicy**: Grant `system_server` read/write access to CPU and GPU sysfs nodes (e.g. `sysfs_devices_system_cpu`, `vendor_sysfs_kgsl`, `vendor_sysfs_devfreq`).
+
+If no XML is provided, Ax Kernel Manager automatically falls back to discovering CPU policies under `/sys/devices/system/cpu/cpufreq/` and GPU nodes under `/sys/class/kgsl/` or `/sys/class/devfreq/`.  
 ---
 
 ## SEPolicy Adjustments
