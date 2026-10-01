@@ -342,6 +342,9 @@
   <project path="system/update_engine" name="android_system_update_engine" groups="pdk" remote="axion" />
   <project path="system/vold" name="android_system_vold" groups="pdk" remote="axion" />
   
+  <!-- Prebuilts -->
+  <project path="prebuilts/jvmcache/linux-x86" name="android_prebuilts_jvmcache" clone-depth="1" remote="axion" />
+
   <project path="toolchain/pgo-profiles" name="android_toolchain_pgo-profiles" groups="pdk" remote="axion" />
 
   <!-- Vendor  -->
