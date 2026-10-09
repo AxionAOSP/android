@@ -105,6 +105,11 @@ TARGET_DOZE_SIDE_FPS_PULSE_SUPPORTED ?= false
 
 - **High Brightness Mode (HBM)**: Enable if your panel supports a high brightness toggle.  
 
+### Custom Power hints (optional)
+Axion introduces custom but optional power hints which is used by AxDragonite. If not available, fallback powermanager boosts will be used (combination of various powermanager mode/boost).
+
+Adding custom hints example (sm6375): https://github.com/AxionAOSP-devices/android_device_oneplus_sm6375-common/commit/16baba68e7a03a4426ddfa6f83268771c8a8ca94
+
 ### Ax Kernel Manager
 
 Ax Kernel Manager configures CPU frequencies, CPU governors, and GPU clocks using sysfs nodes defined in `ax_kernel_manager.xml`.
@@ -184,40 +189,6 @@ Because `system_server` applies frequency and governor values at runtime, sysfs 
 2. **SEPolicy**: Grant `system_server` read/write access to CPU and GPU sysfs nodes (e.g. `sysfs_devices_system_cpu`, `vendor_sysfs_kgsl`, `vendor_sysfs_devfreq`).
 
 If no XML is provided, Ax Kernel Manager automatically falls back to discovering CPU policies under `/sys/devices/system/cpu/cpufreq/` and GPU nodes under `/sys/class/kgsl/` or `/sys/class/devfreq/`.  
----
-
-## SEPolicy Adjustments
-
-Some devices need SELinux adjustments to allow AxionOS performance tuning.  
-
-# Performance mode
-- If your device uses standard labels, add rules like this to your device tree:
-
-```genfs_context
-genfscon proc /sys/vm/dirty_writeback_centisecs     u:object_r:proc_dirty:s0
-genfscon proc /sys/vm/vfs_cache_pressure            u:object_r:proc_drop_caches:s0
-genfscon proc /sys/vm/dirty_ratio                   u:object_r:proc_dirty:s0
-genfscon proc /sys/kernel/sched_migration_cost_ns   u:object_r:proc_sched:s0
-
-```
-
-# SEPolicy conflicts
-- If your device uses different OEM labels (common on MediaTek or Qualcomm), add `allow` rules instead of relabeling.
-```init.te
-allow init proc_vm_dirty:file rw_file_perms;
-allow init proc_dirty_ratio:file rw_file_perms;
-```
----
-
-## Prebuilt LineageOS Apps
-
-You can choose whether to include LineageOS prebuilt apps.  
-Default is disabled.
-
-```make
-TARGET_INCLUDES_LOS_PREBUILTS := true/false
-```
-
 ---
 
 ## Building AxionOS
